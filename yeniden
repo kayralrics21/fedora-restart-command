@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Restart the system on Fedora Linux.
+set -euo pipefail
+
+if [[ ! -x /usr/bin/systemctl ]]; then
+    printf 'Error: /usr/bin/systemctl was not found.\n' >&2
+    exit 127
+fi
+
+if [[ "$EUID" -eq 0 ]]; then
+    exec /usr/bin/systemctl reboot
+fi
+
+if ! command -v sudo >/dev/null 2>&1; then
+    printf 'Error: sudo is required to request a system restart.\n' >&2
+    exit 127
+fi
+
+exec /usr/bin/sudo /usr/bin/systemctl reboot
